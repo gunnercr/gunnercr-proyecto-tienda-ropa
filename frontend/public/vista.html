@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD API View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .form-section {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gestión de Tienda de Ropa</h1>
+
+    <div class="form-section">
+        <h2>Crear Prenda</h2>
+        <form id="prendaForm">
+            <input type="text" id="nombre_prenda" placeholder="Nombre de la Prenda" required>
+            <input type="text" id="talla" placeholder="Talla" required>
+            <input type="text" id="color" placeholder="Color" required>
+            <input type="number" id="stock" placeholder="Stock" required>
+            <input type="number" id="id_marca" placeholder="ID de la Marca" required>
+            <button type="submit">Crear Prenda</button>
+        </form>
+    </div>
+
+    <div class="form-section">
+        <h2>Lista de Prendas</h2>
+        <button onclick="fetchPrendas()">Cargar Prendas</button>
+        <table id="prendasTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Talla</th>
+                    <th>Color</th>
+                    <th>Stock</th>
+                    <th>ID Marca</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000/api.php'; // Reemplaza con la URL base de tu API
+
+        // Crear Prenda
+        document.getElementById('prendaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const prenda = {
+                nombre_prenda: document.getElementById('nombre_prenda').value,
+                talla: document.getElementById('talla').value,
+                color: document.getElementById('color').value,
+                stock: document.getElementById('stock').value,
+                id_marca: document.getElementById('id_marca').value,
+            };
+
+            const response = await fetch(`${API_URL}/prenda`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(prenda),
+            });
+
+            if (response.ok) {
+                alert('Prenda creada con éxito');
+                fetchPrendas();
+            } else {
+                alert('Error al crear prenda');
+            }
+        });
+
+        // Obtener Prendas
+        async function fetchPrendas() {
+            const response = await fetch(`${API_URL}/prenda`);
+            const prendas = await response.json();
+
+            const tableBody = document.querySelector('#prendasTable tbody');
+            tableBody.innerHTML = '';
+
+            prendas.forEach(prenda => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td>${prenda.id_prenda}</td>
+                    <td>${prenda.nombre_prenda}</td>
+                    <td>${prenda.talla}</td>
+                    <td>${prenda.color}</td>
+                    <td>${prenda.stock}</td>
+                    <td>${prenda.id_marca}</td>
+                    <td>
+                        <button onclick="deletePrenda(${prenda.id_prenda})">Eliminar</button>
+                    </td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Eliminar Prenda
+        async function deletePrenda(id) {
+            const response = await fetch(`${API_URL}/prenda/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert('Prenda eliminada con éxito');
+                fetchPrendas();
+            } else {
+                alert('Error al eliminar prenda');
+            }
+        }
+    </script>
+</body>
+</html>
