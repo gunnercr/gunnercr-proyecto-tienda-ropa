@@ -1,13 +1,13 @@
 <?php
-// Configuración inicial
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');  // Permite solicitudes de cualquier origen
-header('Access-Control-Allow-Headers: Content-Type, Authorization');  // Permite el encabezado Content-Type
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');  // Permite estos métodos
 
-// Verifica si la solicitud es un preflight (OPTIONS)
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');  
+header('Access-Control-Allow-Headers: Content-Type, Authorization');  
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');  
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    // Responde a la solicitud preflight sin procesar la solicitud
+    
     http_response_code(200);
     exit;
 }
